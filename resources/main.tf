@@ -50,16 +50,6 @@ resource "aws_internet_gateway" "main" {
   }
 }
 
-# Elastic IP for NAT Gateway
-resource "aws_eip" "nat" {
-  domain = "vpc"
-
-  tags = {
-    Name        = "${var.environment}-mastodon-nat-eip"
-    Environment = var.environment
-  }
-}
-
 # Route table for public subnets
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
@@ -146,6 +136,54 @@ resource "aws_security_group" "db" {
   tags = {
     Name        = "${var.environment}-mastodon-db-sg"
     Environment = var.environment
+  }
+}
+
+# ECR API endpoint
+resource "aws_vpc_endpoint" "ecr_api" {
+  vpc_id             = aws_vpc.main.id
+  service_name       = "com.amazonaws.${var.region}.ecr.api"
+  vpc_endpoint_type  = "Interface"
+  subnet_ids         = [ aws_subnet.private.id ]
+  security_group_ids = [aws_security_group.vpc_endpoints.id]
+
+  private_dns_enabled = true
+
+  tags = {
+    Name = "ecr-api-endpoint"
+  }
+}
+
+# ECR DKR endpoint
+resource "aws_vpc_endpoint" "ecr_dkr" {
+  vpc_id             = aws_vpc.main.id
+  service_name       = "com.amazonaws.${var.region}.ecr.dkr"
+  vpc_endpoint_type  = "Interface"
+  subnet_ids         = [ aws_subnet.private.id ]
+  security_group_ids = [aws_security_group.vpc_endpoints.id]
+
+  private_dns_enabled = true
+
+  tags = {
+    Name = "ecr-dkr-endpoint"
+  }
+}
+
+# S3 endpoint (needed for ECR to function)
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id       = aws_vpc.main.id
+  service_name = "com.amazonaws.${var.region}.s3"
+  
+  # S3 uses Gateway endpoint type, which is cheaper than Interface
+  vpc_endpoint_type = "Gateway"
+
+  # Route table associations
+  route_table_ids = [
+    data.aws_vpc.selected.main_route_table_id
+  ]
+
+  tags = {
+    Name = "s3-endpoint"
   }
 }
 
