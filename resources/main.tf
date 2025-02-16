@@ -179,7 +179,7 @@ resource "aws_vpc_endpoint" "s3" {
 
   # Route table associations
   route_table_ids = [
-    data.aws_vpc.selected.main_route_table_id
+    aws_vpc.main.main_route_table_id
   ]
 
   tags = {
