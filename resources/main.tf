@@ -15,7 +15,7 @@ resource "aws_subnet" "private" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = cidrsubnet(var.vpc_cidr, 8, count.index)
   availability_zone = data.aws_availability_zones.available.names[count.index]
-  
+
   # Explicitly disable auto-assign public IPs
   map_public_ip_on_launch = false
 
