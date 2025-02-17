@@ -1,15 +1,10 @@
-variable "environment" {
-  description = "Environment name (e.g., prod, staging)"
+variable "project_name" {
   type        = string
-}
-
-variable "region" {
-  description = "AWS region"
-  type        = string
+  description = "Name of the project, used for resource naming"
 }
 
 variable "vpc_cidr" {
-  description = "CIDR block for VPC"
   type        = string
+  description = "CIDR block for the VPC"
   default     = "10.0.0.0/16"
 }
