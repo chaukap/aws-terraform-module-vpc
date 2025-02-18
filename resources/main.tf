@@ -268,6 +268,14 @@ resource "aws_security_group" "vpc_endpoints" {
     description = "Allow HTTPS from VPC CIDR"
   }
 
+  # SES ingress
+  ingress {
+    from_port       = 587
+    to_port         = 587
+    protocol        = "tcp"
+    security_groups = [aws_security_group.ecs_tasks.id]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
