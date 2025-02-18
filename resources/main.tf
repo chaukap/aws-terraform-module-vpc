@@ -270,10 +270,11 @@ resource "aws_security_group" "vpc_endpoints" {
 
   # SES ingress
   ingress {
-    from_port       = 587
-    to_port         = 587
-    protocol        = "tcp"
-    security_groups = [aws_security_group.ecs_tasks.id]
+    from_port   = 587
+    to_port     = 587
+    protocol    = "tcp"
+    cidr_blocks = [var.vpc_cidr]
+    description = "Email"
   }
 
   egress {
