@@ -239,6 +239,21 @@ resource "aws_vpc_endpoint" "ssmmessages" {
   }
 }
 
+resource "aws_vpc_endpoint" "ses" {
+  vpc_id            = aws_vpc.main.id
+  service_name      = "com.amazonaws.${data.aws_region.current.name}.email-smtp"
+  vpc_endpoint_type = "Interface"
+  subnet_ids        = aws_subnet.private[*].id
+
+  security_group_ids = [aws_security_group.vpc_endpoints.id]
+
+  private_dns_enabled = true
+
+  tags = {
+    Name = "ses-smtp-endpoint"
+  }
+}
+
 # Security group for VPC endpoints
 resource "aws_security_group" "vpc_endpoints" {
   name_prefix = "${var.project_name}-vpc-endpoints"
