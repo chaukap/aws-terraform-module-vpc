@@ -23,3 +23,8 @@ output "security_group_id" {
   value       = aws_security_group.vpc_endpoints.id
   description = "ID of the VPC endpoints security group"
 }
+
+output "ses_domain" {
+  value       = aws_vpc_endpoint.ses.dns_entry[0]["dns_name"]
+  description = "Domain for sending emails through the VPC"
+}
