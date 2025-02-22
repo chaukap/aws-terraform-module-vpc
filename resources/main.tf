@@ -167,34 +167,6 @@ resource "aws_vpc_endpoint" "ecs" {
   }
 }
 
-resource "aws_vpc_endpoint" "ecs_agent" {
-  vpc_id              = aws_vpc.main.id
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.ecs-agent"
-  vpc_endpoint_type   = "Interface"
-  private_dns_enabled = true
-  subnet_ids          = aws_subnet.private[*].id
-
-  security_group_ids = [aws_security_group.vpc_endpoints.id]
-
-  tags = {
-    Name = "${var.project_name}-ecs-agent-endpoint"
-  }
-}
-
-resource "aws_vpc_endpoint" "ecs_telemetry" {
-  vpc_id              = aws_vpc.main.id
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.ecs-telemetry"
-  vpc_endpoint_type   = "Interface"
-  private_dns_enabled = true
-  subnet_ids          = aws_subnet.private[*].id
-
-  security_group_ids = [aws_security_group.vpc_endpoints.id]
-
-  tags = {
-    Name = "${var.project_name}-ecs-telemetry-endpoint"
-  }
-}
-
 # Service discovery endpoint (needed for ECS service discovery)
 resource "aws_vpc_endpoint" "servicediscovery" {
   vpc_id              = aws_vpc.main.id
